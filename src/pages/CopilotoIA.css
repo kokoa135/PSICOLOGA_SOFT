@@ -1,0 +1,841 @@
+/* ============================================================
+   COPILOTO IA — Premium Clinical AI Interface
+   ============================================================ */
+
+.ia-page {
+  display: flex;
+  height: 100vh;
+  background: #f8f9fc;
+  overflow: hidden;
+}
+
+
+/* ── LEFT PANEL ─────────────────────────────────────────── */
+.ia-panel {
+  width: 270px;
+  flex-shrink: 0;
+  background: white;
+  border-right: 1px solid #eaecf0;
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem 1.25rem;
+  overflow-y: auto;
+}
+
+.ia-panel-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #f1f3f7;
+}
+
+.ia-logo-orb {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  flex-shrink: 0;
+}
+
+.ia-panel-logo h2 {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1a1a2e;
+  line-height: 1.2;
+}
+
+.ia-version {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.ia-panel-section {
+  margin-bottom: 1.75rem;
+}
+
+.ia-panel-mid {
+  flex: 1;
+}
+
+.ia-panel-label {
+  font-size: 0.625rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #94a3b8;
+  margin-bottom: 0.75rem;
+}
+
+.ia-quick-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  border-radius: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #374151;
+  transition: all 0.18s;
+  margin-bottom: 0.25rem;
+}
+
+.ia-quick-btn:hover {
+  background: #f5f3ff;
+  color: #6366f1;
+  transform: translateX(3px);
+}
+
+.ia-quick-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #f5f3ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6366f1;
+  flex-shrink: 0;
+}
+
+.ia-quick-btn:hover .ia-quick-icon {
+  background: #ede9fe;
+}
+
+.ia-quick-arrow {
+  margin-left: auto;
+  color: #c4b5fd;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.ia-quick-btn:hover .ia-quick-arrow { opacity: 1; }
+
+.ia-history-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94a3b8;
+  padding: 0.5rem 0.25rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.ia-history-item:hover { color: #6366f1; background: #f5f3ff; padding-left: 0.5rem; }
+
+.ia-panel-footer { margin-top: auto; }
+
+.ia-trust-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #15803d;
+}
+
+/* ── CHAT AREA ──────────────────────────────────────────── */
+.ia-chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Header */
+.ia-chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.125rem 2rem;
+  background: white;
+  border-bottom: 1px solid #eaecf0;
+  flex-shrink: 0;
+}
+
+.ia-chat-agent {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ia-agent-avatar {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
+}
+
+.ia-online-dot {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 12px;
+  height: 12px;
+  background: #10b981;
+  border: 2px solid white;
+  border-radius: 50%;
+}
+
+.ia-chat-agent h3 {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: #1a1a2e;
+}
+
+.ia-chat-agent p {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.ia-model-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  color: #6366f1;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  padding: 0.4rem 0.875rem;
+  border-radius: 20px;
+}
+
+/* Messages */
+.ia-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: #f8f9fc;
+}
+
+/* Welcome Screen */
+.ia-welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem 1rem;
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.ia-welcome-orb {
+  width: 80px;
+  height: 80px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+  animation: floatOrb 3s ease-in-out infinite;
+}
+
+@keyframes floatOrb {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.ia-welcome h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #1a1a2e;
+  margin-bottom: 0.75rem;
+}
+
+.ia-welcome > p {
+  font-size: 0.9375rem;
+  color: #6b7280;
+  line-height: 1.7;
+  max-width: 500px;
+  margin-bottom: 2.5rem;
+  font-weight: 500;
+}
+
+.ia-suggestion-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  width: 100%;
+}
+
+.ia-suggestion-card {
+  background: white;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 1.25rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ia-suggestion-card:hover {
+  border-color: #6366f1;
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.12);
+  transform: translateY(-3px);
+}
+
+.ia-sug-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #f5f3ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6366f1;
+  margin-bottom: 0.25rem;
+}
+
+.ia-sug-label {
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #1a1a2e;
+  display: block;
+}
+
+.ia-sug-desc {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Message Rows */
+.ia-msg {
+  display: flex;
+  gap: 0.875rem;
+  max-width: 85%;
+  animation: msgIn 0.25s ease-out;
+}
+
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ia-msg.assistant { align-self: flex-start; }
+.ia-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+
+.ia-msg-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 24px;
+}
+
+.ia-msg.assistant .ia-msg-avatar {
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  color: white;
+}
+
+.ia-msg.user .ia-msg-avatar {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.ia-msg-body { display: flex; flex-direction: column; gap: 0.25rem; }
+
+.ia-msg-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0 0.25rem;
+}
+
+.ia-msg.user .ia-msg-meta { flex-direction: row-reverse; }
+
+.ia-msg-who {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #374151;
+}
+
+.ia-msg-time {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.ia-msg-bubble {
+  padding: 1rem 1.25rem;
+  border-radius: 18px;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  font-weight: 500;
+}
+
+.ia-msg.assistant .ia-msg-bubble {
+  background: white;
+  border: 1px solid #e5e7eb;
+  color: #1f2937;
+  border-top-left-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.ia-msg.user .ia-msg-bubble {
+  background: linear-gradient(135deg, #6366f1, #7c3aed);
+  color: white;
+  border-top-right-radius: 4px;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
+}
+
+/* Typing Indicator */
+.ia-typing-bubble {
+  display: flex !important;
+  gap: 0.375rem;
+  align-items: center;
+  padding: 1rem 1.25rem !important;
+}
+
+.ia-typing-bubble span {
+  width: 8px;
+  height: 8px;
+  background: #a5b4fc;
+  border-radius: 50%;
+  animation: typingDot 1.4s infinite;
+}
+
+.ia-typing-bubble span:nth-child(2) { animation-delay: 0.2s; }
+.ia-typing-bubble span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingDot {
+  0%, 80%, 100% { transform: scale(1); opacity: 0.5; }
+  40% { transform: scale(1.3); opacity: 1; }
+}
+
+/* Input */
+.ia-input-area {
+  background: white;
+  border-top: 1px solid #eaecf0;
+  padding: 1.25rem 2rem 1.5rem;
+  flex-shrink: 0;
+}
+
+.ia-input-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #f8f9fc;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 0.5rem 0.5rem 0.5rem 1.25rem;
+  transition: all 0.2s;
+}
+
+.ia-input-box:focus-within {
+  border-color: #6366f1;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
+}
+
+.ia-input-box input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #1f2937;
+  padding: 0.375rem 0;
+}
+
+.ia-input-box input::placeholder { color: #9ca3af; }
+
+.ia-send-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #e5e7eb;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ia-send-btn.active {
+  background: linear-gradient(135deg, #6366f1, #7c3aed);
+  color: white;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.ia-send-btn.active:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.4);
+}
+
+.ia-disclaimer {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.6875rem;
+  color: #9ca3af;
+  font-weight: 600;
+  margin: 0.75rem 0 0;
+  justify-content: center;
+}
+
+/* ── GRABACION DE SESION ─────────────────────────────────── */
+.ia-rec-widget {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ia-rec-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ia-rec-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+}
+
+.ia-rec-active {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #fff0f0;
+  border: 1.5px solid #fca5a5;
+  border-radius: 10px;
+}
+
+.ia-rec-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ia-rec-dot {
+  width: 10px;
+  height: 10px;
+  background: #ef4444;
+  border-radius: 50%;
+  animation: recPulse 1s ease-in-out infinite;
+}
+
+@keyframes recPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+.ia-rec-timer {
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #ef4444;
+  font-variant-numeric: tabular-nums;
+}
+
+.ia-rec-stop {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  background: #ef4444;
+  color: white;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+}
+
+.ia-rec-processing {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #6366f1;
+  padding: 0.5rem 0.75rem;
+  background: #f5f3ff;
+  border-radius: 10px;
+}
+
+.ia-spin {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #c4b5fd;
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.ia-rec-done {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #10b981;
+  padding: 0.5rem 0.75rem;
+  background: #f0fdf4;
+  border-radius: 10px;
+}
+
+.ia-rec-hint {
+  font-size: 0.625rem;
+  color: #9ca3af;
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* ── ZONA DE ARCHIVOS ────────────────────────────────────── */
+.ia-drop-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 1rem;
+  border: 1.5px dashed #d1d5db;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.ia-drop-zone:hover,
+.ia-drop-zone.drag-over {
+  border-color: #6366f1;
+  background: #f5f3ff;
+  color: #6366f1;
+}
+
+.ia-drop-zone small {
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: #c4b5fd;
+}
+
+/* ── ARCHIVO PENDIENTE ──────────────────────────────────── */
+.ia-pending-file {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  margin-bottom: 0.625rem;
+  background: #f5f3ff;
+  border: 1px solid #c4b5fd;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #6366f1;
+}
+
+.ia-pending-file span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.ia-pending-file button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #a5b4fc;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  border-radius: 4px;
+}
+
+.ia-pending-file button:hover { color: #6366f1; background: #ede9fe; }
+
+/* ── BOTONES EN INPUT ────────────────────────────────────── */
+.ia-attach-btn,
+.ia-mic-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: transparent;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.18s;
+}
+
+.ia-attach-btn:hover { color: #6366f1; background: #f5f3ff; }
+
+.ia-mic-btn:hover { color: #ef4444; background: #fff0f0; }
+
+.ia-mic-btn.recording {
+  color: white;
+  background: #ef4444;
+  animation: recPulse 1s ease-in-out infinite;
+}
+
+/* ── ADJUNTO EN MENSAJE ──────────────────────────────────── */
+.ia-msg-attachment {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.35rem 0.75rem;
+  background: #f5f3ff;
+  border: 1px solid #c4b5fd;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6366f1;
+  margin-bottom: 0.25rem;
+}
+
+/* ── CAPACIDADES DEL COPILOTO ────────────────────────────── */
+.ia-caps-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem;
+  width: 100%;
+  margin-bottom: 1.75rem;
+}
+
+.ia-cap-card {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  background: white;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 14px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #374151;
+}
+
+.ia-cap-card svg { color: #6366f1; flex-shrink: 0; }
+
+/* ── AUDIO STYLES ────────────────────────────────────────── */
+.ia-audio-attachment {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.ia-attachment-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ia-inline-audio {
+  width: 100%;
+  max-width: 240px;
+  height: 32px;
+  border-radius: 8px;
+}
+
+.ia-audio-actions {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #f1f3f7;
+}
+
+.ia-download-link {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #6366f1;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.ia-download-link:hover {
+  color: #4338ca;
+  transform: translateX(2px);
+}
+
+.ia-msg-attachment {
+  background: white !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  max-width: 280px;
+}
+
+.ia-msg.user .ia-msg-attachment {
+  background: rgba(255,255,255,0.1) !important;
+  border-color: rgba(255,255,255,0.2) !important;
+  color: white !important;
+}
+
+.ia-msg.user .ia-msg-attachment span {
+  color: white;
+}
+
+.ia-msg.user .ia-inline-audio {
+  filter: invert(1) hue-rotate(180deg);
+  opacity: 0.9;
+}
+

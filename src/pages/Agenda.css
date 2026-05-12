@@ -1,0 +1,746 @@
+/* AGENDA PODOSCOPE LAYOUT + SOFTPSY LIGHT AESTHETIC - OPTIMIZED ACTIONS */
+
+.agenda-container {
+  background: #f8fafc;
+  min-height: 100vh;
+  padding: 2rem 3rem;
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+.agenda-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(15px);
+  padding: 1.5rem 2.5rem;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+}
+
+.calendar-title h1 {
+  font-size: 1.75rem;
+  font-weight: 850;
+  margin: 0;
+  background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.calendar-title p {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+/* LEGEND BAR */
+.agenda-legend-bar {
+  background: white;
+  padding: 1rem 2.5rem;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  border: 1px solid var(--border-color);
+  overflow-x: auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot.consulta { background: #6366f1; }
+.dot.seguimiento { background: #ec4899; }
+.dot.estudio { background: #06b6d4; }
+.dot.tratamiento { background: #10b981; }
+.dot.pendiente { background: #f59e0b; }
+.dot.confirmada { background: #3b82f6; }
+.dot.completada { background: #8b5cf6; }
+.dot.cancelada { background: #ef4444; }
+
+/* NAV & VIEW CONTROLS */
+.agenda-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0 0.5rem;
+}
+
+.nav-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-nav-glass {
+  background: white;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.6rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-nav-glass:hover { border-color: var(--primary); color: var(--primary); }
+
+.current-period {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  text-transform: capitalize;
+}
+
+/* MONTH GRID */
+.month-grid-container {
+  background: white;
+  border-radius: 24px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+}
+
+.month-grid-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: #fcfcff;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.header-day {
+  padding: 1.25rem;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.month-days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.day-cell {
+  min-height: 140px;
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.75rem;
+  transition: background 0.2s;
+  cursor: pointer;
+  background: white;
+}
+
+.day-cell:hover { background: #f8fafc; }
+.day-cell:nth-child(7n) { border-right: none; }
+
+.day-number {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-bottom: 1rem;
+  display: block;
+  text-align: right;
+}
+
+.day-cell.current { background: #f5f3ff; }
+.day-cell.current .day-number { color: var(--primary); font-weight: 850; }
+
+.cell-appointments {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* APPOINTMENT CARD - PODOSCOPE STYLE */
+.apt-mini-card {
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.725rem;
+  font-weight: 750;
+  color: #1e293b; /* Dark text for better legibility on light status colors */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: #f1f5f9; /* Default background */
+  border-left: 4px solid var(--primary); /* Colored sidebar */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+  transition: transform 0.1s;
+}
+
+.apt-mini-card:hover { transform: scale(1.02); }
+
+/* Status Backgrounds */
+.apt-mini-card.pendiente { background: #fffbeb; border-left-color: #f59e0b; }
+.apt-mini-card.confirmada { background: #eff6ff; border-left-color: #3b82f6; }
+.apt-mini-card.completada { background: #f0fdf4; border-left-color: #22c55e; }
+.apt-mini-card.cancelada { background: #fef2f2; border-left-color: #ef4444; }
+
+/* Type Sidebar Colors (Overriding border if needed or combining) */
+.apt-mini-card.consulta { border-left-color: #6366f1; }
+.apt-mini-card.seguimiento { border-left-color: #ec4899; }
+.apt-mini-card.estudio { border-left-color: #06b6d4; }
+.apt-mini-card.tratamiento { border-left-color: #10b981; }
+
+/* MODAL ACTIONS - PODOSCOPE STYLE */
+.modal-actions-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.btn-action-wa {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1rem;
+  background: #25d366;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
+}
+
+.btn-action-wa:hover { background: #22c35e; transform: translateY(-2px); }
+
+.btn-action-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1rem;
+  background: #fef2f2;
+  color: #ef4444;
+  border: 1px solid #fee2e2;
+  border-radius: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-action-delete:hover { background: #fee2e2; transform: translateY(-2px); }
+
+.btn-primary-neon {
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  padding: 0.875rem 1.75rem;
+  border-radius: 16px;
+  font-weight: 800;
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary-neon:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(99, 102, 241, 0.3); }
+
+/* MODAL GLOBAL OVERRIDES - HIDE SCROLLBAR */
+.content-modal {
+  max-height: 90vh;
+  overflow-y: auto;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.content-modal::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* LIST VIEW STYLES */
+.agenda-list-view {
+  margin-top: 1.5rem;
+  padding: 1rem;
+}
+
+.agenda-list-item {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.agenda-list-item:hover {
+  transform: translateX(8px);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--primary);
+}
+
+.apt-date-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  height: 60px;
+  background: var(--gradient-primary);
+  border-radius: 16px;
+  color: white;
+  box-shadow: 0 8px 16px rgba(99, 102, 241, 0.2);
+}
+
+.apt-date-badge .day {
+  font-size: 1.5rem;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.apt-date-badge .month {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.apt-info {
+  flex: 1;
+}
+
+.apt-info h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.apt-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.status-tag {
+  padding: 0.2rem 0.75rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.status-tag.pendiente { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+.status-tag.confirmada { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+.status-tag.completada { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+
+.apt-type-label {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* WEEK VIEW */
+.week-view-container {
+  margin-top: 1.5rem;
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: var(--border-color);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.week-col {
+  background: white;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.week-col.today {
+  background: #f5f3ff;
+}
+
+.week-day-header {
+  padding: 1rem;
+  text-align: center;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+}
+
+.week-day-content {
+  flex: 1;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.apt-card-podo {
+  padding: 0.8rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #f8fafc;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.apt-card-podo:hover {
+  transform: scale(1.02);
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.apt-card-podo.consulta { border-left: 4px solid #6366f1; }
+.apt-card-podo.seguimiento { border-left: 4px solid #10b981; }
+.apt-card-podo .time { font-weight: 800; color: var(--primary); margin-bottom: 2px; }
+.apt-card-podo .name { font-weight: 600; }
+
+/* DAY VIEW */
+.day-view-container {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.day-detail-card {
+  width: 100%;
+  max-width: 800px;
+  padding: 2.5rem;
+  background: white;
+  border-radius: 32px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+}
+
+.day-header-podo h2 {
+  font-size: 1.8rem;
+  font-weight: 850;
+  margin-bottom: 0.25rem;
+}
+
+.day-header-podo span {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.day-hours-list {
+  margin-top: 2rem;
+}
+
+.hour-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.hour-label {
+  min-width: 60px;
+  font-weight: 700;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding-top: 0.5rem;
+}
+
+.hour-slot {
+  flex: 1;
+}
+
+.apt-slot-card {
+  padding: 1.25rem 1.5rem;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #f8fafc;
+}
+
+.apt-slot-card.consulta { background: var(--gradient-primary); color: white; }
+.apt-slot-card.seguimiento { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+
+.empty-slot {
+  padding: 1.25rem;
+  border-radius: 16px;
+  border: 2px dashed rgba(0, 0, 0, 0.05);
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.empty-slot:hover {
+  background: rgba(99, 102, 241, 0.05);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.podo-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 2rem -3rem 1.5rem -3rem;
+}
+
+.podoscope-modal {
+  background: #0a0b14 !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.podoscope-modal h2, 
+.podoscope-modal h3 {
+  color: white !important;
+}
+
+.podoscope-modal .pro-form-input {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+.podoscope-modal .pro-form-group label {
+  color: #94a3b8 !important;
+}
+
+.podoscope-modal select option {
+  background: #0a0b14;
+  color: white;
+}
+
+.podoscope-modal .close-btn {
+  color: white !important;
+  opacity: 0.5;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.podoscope-modal .close-btn:hover {
+  opacity: 1;
+}
+
+.modal-header-compact {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 2.5rem 3rem 0 3rem;
+}
+
+.header-info {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.apt-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: var(--gradient-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.modal-title-podo {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.modal-subtitle-podo {
+  font-size: 1.5rem;
+  font-weight: 850;
+  color: white;
+  margin: 0;
+}
+
+.apt-details-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 2rem;
+  padding: 0 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.detail-item label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.detail-value {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #e2e8f0;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.875rem 1.25rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pro-form-input-podo {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.pro-form-input-podo:focus {
+  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.podo-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  margin: 0;
+}
+
+/* PODOSCOPE HIGH-FIDELITY ACTIONS BAR */
+.podoscope-actions-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.5rem 2.5rem;
+  background: transparent;
+  justify-content: space-between;
+}
+
+.podoscope-actions-bar button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.75rem 0.5rem;
+  border-radius: 16px;
+  font-weight: 750;
+  font-size: 0.65rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  height: auto;
+  min-height: 64px;
+}
+
+.podoscope-actions-bar button span {
+  white-space: normal;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.btn-podo-red {
+  background: #2a1518;
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.1);
+}
+
+.btn-podo-red:hover {
+  background: #3d1d21;
+  transform: translateY(-2px);
+}
+
+.btn-podo-green {
+  background: #0f241d;
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.1);
+}
+
+.btn-podo-green:hover {
+  background: #143127;
+  transform: translateY(-2px);
+}
+
+.btn-podo-purple {
+  background: #6d28d9;
+  color: white;
+  box-shadow: 0 4px 12px rgba(109, 40, 217, 0.2);
+}
+
+.btn-podo-purple:hover {
+  background: #7c3aed;
+  transform: translateY(-2px);
+}
+
+.btn-start-session-podo {
+  width: calc(100% - 5rem);
+  margin: 0 2.5rem 2.5rem 2.5rem;
+  background: white;
+  color: #0a0b14;
+  border: none;
+  padding: 1.125rem;
+  border-radius: 18px;
+  font-weight: 850;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+}
+
+.btn-start-session-podo:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(255, 255, 255, 0.15);
+  background: #f8fafc;
+}
+
+@media (max-width: 1024px) {
+  .agenda-container { padding: 1.5rem; }
+  .day-cell { min-height: 100px; }
+}
