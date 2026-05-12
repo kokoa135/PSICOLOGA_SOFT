@@ -47,8 +47,10 @@ const Educativo = () => {
   const [results, setResults] = useState<any[]>([]);
   const [selectedResult, setSelectedResult] = useState<any>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [previewTest, setPreviewTest] = useState<any | null>(null);
+  const [results, setResults] = useState<any[]>([]);
   const [professionalNotes, setProfessionalNotes] = useState<string>('');
+  const [generalObservations, setGeneralObservations] = useState<string>('');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchResults();
@@ -101,7 +103,8 @@ const Educativo = () => {
 
   useEffect(() => {
     if (selectedResult) {
-      setProfessionalNotes(selectedResult.professionalNotes || '');
+      setProfessionalNotes(selectedResult.professional_notes || selectedResult.professionalNotes || '');
+      setGeneralObservations(selectedResult.general_observations || '');
     }
   }, [selectedResult]);
 
@@ -111,19 +114,22 @@ const Educativo = () => {
     try {
       const { error } = await supabase
         .from('assessment_results')
-        .update({ professional_notes: professionalNotes })
+        .update({ 
+          professional_notes: professionalNotes,
+          general_observations: generalObservations 
+        })
         .eq('id', selectedResult.id);
 
       if (error) throw error;
 
       setResults(prev => prev.map(res => 
-        res.id === selectedResult.id ? { ...res, professionalNotes } : res
+        res.id === selectedResult.id ? { ...res, professional_notes: professionalNotes, general_observations: generalObservations } : res
       ));
-      setSelectedResult({ ...selectedResult, professionalNotes });
-      alert('Notas guardadas correctamente');
+      setSelectedResult({ ...selectedResult, professional_notes: professionalNotes, general_observations: generalObservations });
+      alert('Información guardada correctamente');
     } catch (error) {
       console.error('Error saving notes:', error);
-      alert('Error al guardar las notas');
+      alert('Error al guardar la información');
     }
   };
 
@@ -147,44 +153,43 @@ const Educativo = () => {
     if (!selectedResult) return;
 
     const doc = new jsPDF();
-    const now = new Date();
-    const dateStr = now.toISOString().split('T')[0];
-    const timeStr = now.getHours().toString().padStart(2, '0') + '-' + now.getMinutes().toString().padStart(2, '0');
-    const fileName = `${selectedResult.patientName}_${selectedResult.testTitle}_${dateStr}_${timeStr}.pdf`;
-
-    const interpretation: Record<string, any> = selectedResult.result?.interpretation || {};
-
-    // 1. Cabecera
+    
+    // 1. Cabecera Institucional
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(18);
     doc.setTextColor(30, 27, 75);
-    doc.text('REPORTE CLÍNICO - SOFTPSY', 14, 20);
+    doc.text('REPORTE DE EVALUACIÓN PSICOLÓGICA', 105, 20, { align: 'center' });
 
     doc.setFontSize(12);
-    doc.text(selectedResult.testTitle, 14, 28);
+    doc.setTextColor(79, 70, 229);
+    doc.text(selectedResult.testTitle.toUpperCase(), 105, 28, { align: 'center' });
+
+    doc.setDrawColor(226, 232, 240);
+    doc.line(14, 32, 196, 32);
 
     doc.setFontSize(9);
     doc.setTextColor(100, 116, 139);
-    doc.text(`Paciente: ${selectedResult.patientName}`, 14, 35);
-    doc.text(
-      `Fecha: ${new Date(selectedResult.date).toLocaleDateString()} | Hora: ${new Date(selectedResult.date).toLocaleTimeString()}`,
-      14,
-      40
-    );
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Paciente: ${selectedResult.patientName}`, 14, 38);
+    doc.text(`Fecha: ${new Date(selectedResult.date).toLocaleDateString()}`, 196, 38, { align: 'right' });
 
-    // 2. Gráficos (Captura)
-    const chartsElement = document.querySelector('.report-charts') as HTMLElement;
     let currentY = 45;
 
+    // 2. Gráficos
+    const chartsElement = document.querySelector('.report-charts') as HTMLElement;
     if (chartsElement) {
-      const canvas = await html2canvas(chartsElement, { scale: 2 });
-      const imgData = canvas.toDataURL('image/png');
-      const imgWidth = 180;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      doc.addImage(imgData, 'PNG', 14, currentY, imgWidth, imgHeight);
-      currentY += imgHeight + 10;
+      try {
+        const canvas = await html2canvas(chartsElement, { scale: 2 });
+        const imgData = canvas.toDataURL('image/png');
+        doc.addImage(imgData, 'PNG', 14, currentY, 180, 70);
+        currentY += 75;
+      } catch (e) {
+        currentY += 5;
+      }
     }
 
-    // 3. Cuestionario en 2 Columnas (Texto Real)
+    // 3. Cuestionario Respondido (2 Columnas)
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(11);
     doc.setTextColor(30, 27, 75);
     doc.text('Cuestionario Respondido', 14, currentY);
@@ -192,117 +197,79 @@ const Educativo = () => {
 
     const questions = TEST_DEFINITIONS[selectedResult.testId]?.questions || [];
     const mid = Math.ceil(questions.length / 2);
-    const leftCol = questions.slice(0, mid);
-    const rightCol = questions.slice(mid);
-
     doc.setFontSize(7);
-    doc.setTextColor(50, 50, 50);
+    doc.setTextColor(51, 65, 85);
 
-    const drawColumn = (data: any[], startX: number, startY: number) => {
+    const drawCol = (data: any[], startX: number, startY: number) => {
       let y = startY;
       data.forEach((q) => {
-        const answer =
-          TEST_DEFINITIONS[selectedResult.testId]?.options?.find((o: any) => o.value === selectedResult.responses?.[q.id])
-            ?.label || 'N/A';
-
-        const text = q.text.length > 55 ? q.text.substring(0, 52) + '...' : q.text;
-        doc.text(text, startX, y);
-
-        doc.setFont('helvetica', 'bold');
-        doc.text(answer, startX + 75, y, { align: 'right' });
+        const ans = TEST_DEFINITIONS[selectedResult.testId]?.options?.find((o: any) => o.value === selectedResult.responses?.[q.id])?.label || 'N/A';
+        const txt = q.text.length > 50 ? q.text.substring(0, 47) + '...' : q.text;
         doc.setFont('helvetica', 'normal');
-
+        doc.text(txt, startX, y);
+        doc.setFont('helvetica', 'bold');
+        doc.text(ans, startX + 75, y, { align: 'right' });
         y += 4;
       });
       return y;
     };
 
-    const leftY = drawColumn(leftCol, 14, currentY);
-    const rightY = drawColumn(rightCol, 105, currentY);
+    const leftY = drawCol(questions.slice(0, mid), 14, currentY);
+    const rightY = drawCol(questions.slice(mid), 105, currentY);
     currentY = Math.max(leftY, rightY) + 8;
 
-    // 5. Interpretación Clínica y Observaciones (sin Validez/Sugerencias IA)
-    const hasInterpretation = Object.keys(interpretation || {}).length > 0;
+    // 4. Interpretación y Observaciones
+    if (currentY > 240) { doc.addPage(); currentY = 20; }
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text('Interpretación Clínica', 14, currentY);
+    currentY += 6;
 
-    if (hasInterpretation || professionalNotes.trim()) {
-      if (currentY > 240) {
-        doc.addPage();
-        currentY = 20;
-      }
-
-      doc.setFontSize(12);
-      doc.setTextColor(30, 27, 75);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Interpretación Clínica', 14, currentY);
-      currentY += 4;
-
-      if (hasInterpretation) {
-        // Evitamos autoTable para no depender de plugins externos.
-        const categories = Object.entries(interpretation);
-        doc.setFontSize(9);
-        doc.setTextColor(70, 70, 70);
-
-        categories.forEach(([cat, text], idx) => {
-          const safeText = String(text ?? '');
-          const y = currentY + idx * 5;
-          if (y > 270) {
-            doc.addPage();
-            currentY = 20;
-          }
-          doc.setFont('helvetica', 'bold');
-          doc.text(`${cat}:`, 14, currentY);
-          doc.setFont('helvetica', 'normal');
-          doc.text(safeText, 14 + 40, currentY);
-          currentY += 5;
-        });
-      } else {
-        currentY += 4;
-      }
-
-      if (professionalNotes.trim()) {
-        if (currentY > 240) {
-          doc.addPage();
-          currentY = 20;
-        }
-
-        doc.setFontSize(10);
-        doc.setTextColor(30, 27, 75);
+    const interpretation: Record<string, any> = selectedResult.result?.interpretation || {};
+    doc.setFontSize(8);
+    if (Object.keys(interpretation).length > 0) {
+      Object.entries(interpretation).forEach(([cat, text]) => {
         doc.setFont('helvetica', 'bold');
-        doc.text('Observaciones Generales', 14, currentY);
-        currentY += 4;
-
+        doc.text(`${cat}:`, 14, currentY);
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
-        const obs = professionalNotes.trim();
-
-        // wrap simple
-        const pageWidth = 190;
-        const words = obs.split(/\s+/);
-        let line = '';
-        let y = currentY;
-        const lines: string[] = [];
-
-        words.forEach((w) => {
-          const testLine = line ? `${line} ${w}` : w;
-          if (doc.getTextWidth(testLine) > pageWidth) {
-            lines.push(line);
-            line = w;
-          } else {
-            line = testLine;
-          }
-        });
-        if (line) lines.push(line);
-
-        lines.forEach((l) => {
-          if (y > 270) {
-            doc.addPage();
-            y = 20;
-          }
-          doc.text(l, 14, y);
-          y += 4;
-        });
-      }
+        doc.text(String(text), 55, currentY);
+        currentY += 4;
+      });
     }
+
+    currentY += 4;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text('Observaciones Generales', 14, currentY);
+    currentY += 6;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    
+    // COMBINAR IA + PROFESIONAL
+    const iaSuggestions = getIASuggestions(selectedResult);
+    let finalObs = "";
+    if (iaSuggestions.length > 0) {
+      finalObs += "Sugerencias de la IA:\n" + iaSuggestions.map(s => `• ${s}`).join('\n') + "\n\n";
+    }
+    if (professionalNotes.trim()) {
+      finalObs += "Comentarios del Profesional:\n" + professionalNotes.trim();
+    }
+    if (!finalObs) finalObs = "No se registraron observaciones.";
+
+    const obsLines = doc.splitTextToSize(finalObs, 180);
+    doc.text(obsLines, 14, currentY);
+    currentY += (obsLines.length * 5) + 15;
+
+    // Firma
+    if (currentY > 270) { doc.addPage(); currentY = 20; }
+    doc.setDrawColor(200, 200, 200);
+    doc.line(75, currentY + 10, 135, currentY + 10);
+    doc.setFontSize(8);
+    doc.text('Firma del Especialista', 105, currentY + 15, { align: 'center' });
+
+    const fileName = `${selectedResult.patientName}_Reporte.pdf`;
 
     // 6. Guardar con Selector
     if ('showSaveFilePicker' in window) {
@@ -320,6 +287,29 @@ const Educativo = () => {
     } else {
       doc.save(fileName);
     }
+  };
+
+  const getIASuggestions = (res: any) => {
+    if (!res || !res.result) return [];
+    const testId = res.testId;
+    const scores = res.result.breakdown || {};
+    const total = res.result.total || 0;
+    
+    const suggestions = [];
+
+    if (testId === 'edah') {
+      if (scores['Hiperactividad'] > 10) suggestions.push('Implementar técnicas de refuerzo conductual positivo.');
+      if (scores['Déficit de Atención'] > 10) suggestions.push('Entrenamiento en pausas activas y autoinstrucciones.');
+      if (total > 30) suggestions.push('Coordinación estrecha con el entorno escolar y psicopedagogía.');
+    } else if (testId === 'coopersmith') {
+      if (total < 50) suggestions.push('Trabajar en el fortalecimiento del autoconcepto y autoaceptación.');
+      suggestions.push('Fomentar actividades que promuevan la autonomía y seguridad.');
+    } else {
+      suggestions.push('Realizar seguimiento clínico periódico.');
+      suggestions.push('Complementar con entrevistas a familiares o cuidadores.');
+    }
+
+    return suggestions;
   };
 
   const getChartData = (result: any) => {
@@ -545,6 +535,25 @@ const Educativo = () => {
                   {!selectedResult.responses && <p className="no-data-msg">Respuestas no disponibles para este registro antiguo.</p>}
                 </div>
 
+                <style>{`
+                  .ia-suggestion-list {
+                    padding-left: 1.25rem;
+                    margin: 0;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.4rem;
+                  }
+                  .ia-suggestion-list li {
+                    color: #475569;
+                    font-size: 0.9rem;
+                    line-height: 1.4;
+                  }
+                  .ia-card-highlight {
+                    border-left: 4px solid #6366f1;
+                    background: #f5f7ff;
+                  }
+                `}</style>
+
                 <div className="report-notes">
                   <h3>Notas del Profesional</h3>
                   <textarea 
@@ -556,9 +565,6 @@ const Educativo = () => {
                   <button className="save-notes-btn no-print" onClick={handleSaveNotes}>
                     <Save size={14} /> Guardar Notas
                   </button>
-                  <div className="print-notes-view">
-                    {professionalNotes || "Sin notas adicionales."}
-                  </div>
                 </div>
               </div>
 
@@ -572,9 +578,9 @@ const Educativo = () => {
                   <Brain size={24} />
                   <h3>Sugerencias IA</h3>
                   <ul>
-                    <li>Refuerzo conductual positivo.</li>
-                    <li>Entrenamiento en pausas activas.</li>
-                    <li>Coordinación con el entorno escolar.</li>
+                    {getIASuggestions(selectedResult).map((s, i) => (
+                      <li key={i}>{s}</li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -583,7 +589,7 @@ const Educativo = () => {
                 <div className="report-interpretation">
                   <h3>Interpretación Clínica</h3>
                   <div className="interpretation-grid">
-                    {selectedResult.result.interpretation ? Object.entries(selectedResult.result.interpretation).map(([cat, text]) => (
+                    {selectedResult.result.interpretation && Object.entries(selectedResult.result.interpretation).map(([cat, text]) => (
                       <div key={cat} className="interpretation-card-v2">
                         <span className={`risk-pill ${text?.toString().toLowerCase().replace(' ', '-')}`}>
                           {text?.toString()}
@@ -591,18 +597,28 @@ const Educativo = () => {
                         <h4>{cat}</h4>
                         <p>Puntaje obtenido: {selectedResult.result.breakdown[cat]} pts</p>
                       </div>
-                    )) : (
-                      <div className="interpretation-card">
-                        <TrendingUp size={24} className="trend-icon" />
-                        <div>
-                          <h4>Observaciones Generales</h4>
-                          <p>
-                            El paciente presenta un puntaje total de {selectedResult.result.total}. 
-                            Se recomienda seguimiento clínico y contraste con pruebas proyectivas.
-                          </p>
+                    ))}
+                    
+                    <div className="interpretation-card ia-card-highlight">
+                      <TrendingUp size={24} className="trend-icon" />
+                      <div>
+                        <h4>Sugerencias de la IA (Automático)</h4>
+                        <div className="ia-observations-content">
+                          {getIASuggestions(selectedResult).length > 0 ? (
+                            <ul className="ia-suggestion-list">
+                              {getIASuggestions(selectedResult).map((s, i) => (
+                                <li key={i}>{s}</li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p>
+                              Análisis basado en puntaje total: {selectedResult.result.total} pts. 
+                              Se recomienda seguimiento clínico preventivo.
+                            </p>
+                          )}
                         </div>
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
               </div>
