@@ -47,10 +47,8 @@ const Educativo = () => {
   const [results, setResults] = useState<any[]>([]);
   const [selectedResult, setSelectedResult] = useState<any>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [results, setResults] = useState<any[]>([]);
   const [professionalNotes, setProfessionalNotes] = useState<string>('');
   const [generalObservations, setGeneralObservations] = useState<string>('');
-  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchResults();
