@@ -49,6 +49,8 @@ const Educativo = () => {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [professionalNotes, setProfessionalNotes] = useState<string>('');
   const [generalObservations, setGeneralObservations] = useState<string>('');
+  const [previewTest, setPreviewTest] = useState<any>(null);
+
 
   useEffect(() => {
     fetchResults();
@@ -587,13 +589,13 @@ const Educativo = () => {
                 <div className="report-interpretation">
                   <h3>Interpretación Clínica</h3>
                   <div className="interpretation-grid">
-                    {selectedResult.result.interpretation && Object.entries(selectedResult.result.interpretation).map(([cat, text]) => (
+                    {selectedResult.result?.interpretation && Object.entries(selectedResult.result.interpretation).map(([cat, text]) => (
                       <div key={cat} className="interpretation-card-v2">
-                        <span className={`risk-pill ${text?.toString().toLowerCase().replace(' ', '-')}`}>
-                          {text?.toString()}
+                        <span className={`risk-pill ${String(text).toLowerCase().replace(' ', '-')}`}>
+                          {String(text)}
                         </span>
                         <h4>{cat}</h4>
-                        <p>Puntaje obtenido: {selectedResult.result.breakdown[cat]} pts</p>
+                        <p>Puntaje obtenido: {selectedResult.result.breakdown?.[cat] || 0} pts</p>
                       </div>
                     ))}
                     
@@ -610,7 +612,7 @@ const Educativo = () => {
                             </ul>
                           ) : (
                             <p>
-                              Análisis basado en puntaje total: {selectedResult.result.total} pts. 
+                              Análisis basado en puntaje total: {selectedResult.result?.total || 0} pts. 
                               Se recomienda seguimiento clínico preventivo.
                             </p>
                           )}
