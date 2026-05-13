@@ -174,7 +174,7 @@ const PublicAssessment = () => {
                 <h2>{questions[currentStep - 1].text}</h2>
                 
                 <div className="options-grid">
-                  {test.options.map((option) => (
+                  {(questions[currentStep - 1].options || test.options).map((option: any) => (
                     <button 
                       key={option.value}
                       className={`option-btn ${responses[questions[currentStep - 1].id] === option.value ? 'selected' : ''}`}

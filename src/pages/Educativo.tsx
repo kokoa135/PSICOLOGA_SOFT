@@ -218,55 +218,186 @@ const Educativo = () => {
     const rightY = drawCol(questions.slice(mid), 105, currentY);
     currentY = Math.max(leftY, rightY) + 8;
 
-    // 4. Interpretación y Observaciones
-    if (currentY > 240) { doc.addPage(); currentY = 20; }
-    
+    // ═══════════════════════════════════════════════════════════════════
+    // 4. INTERPRETACIÓN CLÍNICA — cada categoría con puntaje y nivel
+    // ═══════════════════════════════════════════════════════════════════
+    if (currentY > 230) { doc.addPage(); currentY = 20; }
+
+    // Título de sección con línea decorativa
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
+    doc.setFontSize(12);
+    doc.setTextColor(30, 27, 75);
     doc.text('Interpretación Clínica', 14, currentY);
-    currentY += 6;
+    doc.setDrawColor(99, 102, 241); // Indigo accent
+    doc.setLineWidth(0.6);
+    doc.line(14, currentY + 2, 72, currentY + 2);
+    doc.setLineWidth(0.2);
+    currentY += 8;
 
     const interpretation: Record<string, any> = selectedResult.result?.interpretation || {};
-    doc.setFontSize(8);
+    const breakdown: Record<string, number> = selectedResult.result?.breakdown || {};
+
     if (Object.keys(interpretation).length > 0) {
       Object.entries(interpretation).forEach(([cat, text]) => {
+        if (currentY > 270) { doc.addPage(); currentY = 20; }
+
+        // Fondo suave para cada fila
+        doc.setFillColor(245, 247, 255);
+        doc.roundedRect(14, currentY - 3.5, 182, 7, 1.5, 1.5, 'F');
+
+        // Nombre de categoría
         doc.setFont('helvetica', 'bold');
-        doc.text(`${cat}:`, 14, currentY);
+        doc.setFontSize(9);
+        doc.setTextColor(30, 27, 75);
+        doc.text(cat, 16, currentY);
+
+        // Puntaje o Decatipo
+        const decatipo = selectedResult.result?.decatipos?.[cat];
+        const score = breakdown[cat] ?? '—';
         doc.setFont('helvetica', 'normal');
-        doc.text(String(text), 55, currentY);
-        currentY += 4;
+        doc.setFontSize(8);
+        doc.setTextColor(100, 116, 139);
+        if (decatipo !== undefined) {
+          doc.text(`Decatipo: ${decatipo} (PD: ${score})`, 95, currentY);
+        } else {
+          doc.text(`${score} pts`, 110, currentY);
+        }
+
+        // Nivel / interpretación
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        const levelStr = String(text);
+        const isRisk = /alto|riesgo|elevado|significat/i.test(levelStr);
+        const isModerate = /moderado|medio/i.test(levelStr);
+        doc.setTextColor(isRisk ? 220 : isModerate ? 180 : 34, isRisk ? 38 : isModerate ? 120 : 139, isRisk ? 38 : isModerate ? 0 : 34);
+        doc.text(levelStr, 130, currentY);
+
+        doc.setTextColor(51, 65, 85); // reset
+        currentY += 9;
       });
     }
 
+    if (selectedResult.result?.factoresSecundarios) {
+      if (currentY > 260) { doc.addPage(); currentY = 20; }
+      currentY += 5;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.setTextColor(30, 27, 75);
+      doc.text('Factores Secundarios', 14, currentY);
+      currentY += 6;
+      Object.entries(selectedResult.result.factoresSecundarios).forEach(([factor, val]) => {
+        if (currentY > 270) { doc.addPage(); currentY = 20; }
+        doc.setFillColor(240, 249, 255);
+        doc.roundedRect(14, currentY - 3.5, 182, 7, 1.5, 1.5, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.setTextColor(2, 132, 199);
+        doc.text(factor, 16, currentY);
+        
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(100, 116, 139);
+        doc.text(`Decatipo calculado: ${val}`, 95, currentY);
+        currentY += 8;
+      });
+    } else {
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(9);
+      doc.setTextColor(148, 163, 184);
+      doc.text('No se dispone de datos de interpretación para este test.', 14, currentY);
+      currentY += 6;
+    }
+
     currentY += 4;
+
+    // ═══════════════════════════════════════════════════════════════════
+    // 5. NOTAS DEL PROFESIONAL
+    // ═══════════════════════════════════════════════════════════════════
+    if (currentY > 240) { doc.addPage(); currentY = 20; }
+
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.text('Observaciones Generales', 14, currentY);
+    doc.setFontSize(12);
+    doc.setTextColor(30, 27, 75);
+    doc.text('Notas del Profesional', 14, currentY);
+    doc.setDrawColor(99, 102, 241);
+    doc.setLineWidth(0.6);
+    doc.line(14, currentY + 2, 65, currentY + 2);
+    doc.setLineWidth(0.2);
+    currentY += 8;
+
+    if (professionalNotes.trim()) {
+      // Caja con borde
+      doc.setDrawColor(199, 210, 254); // indigo-200
+      doc.setFillColor(248, 250, 255);
+      const noteLines = doc.splitTextToSize(professionalNotes.trim(), 172);
+      const noteBoxH = Math.max(noteLines.length * 4.5 + 6, 14);
+      doc.roundedRect(14, currentY - 2, 182, noteBoxH, 2, 2, 'FD');
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(51, 65, 85);
+      doc.text(noteLines, 18, currentY + 3);
+      currentY += noteBoxH + 6;
+    } else {
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(9);
+      doc.setTextColor(148, 163, 184);
+      doc.text('El profesional no registró notas para esta evaluación.', 14, currentY);
+      currentY += 8;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // 6. SUGERENCIAS DE LA IA
+    // ═══════════════════════════════════════════════════════════════════
+    if (currentY > 240) { doc.addPage(); currentY = 20; }
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.setTextColor(30, 27, 75);
+    doc.text('Sugerencias de la IA', 14, currentY);
+    doc.setDrawColor(99, 102, 241);
+    doc.setLineWidth(0.6);
+    doc.line(14, currentY + 2, 62, currentY + 2);
+    doc.setLineWidth(0.2);
+    currentY += 8;
+
+    const iaSuggestions = getIASuggestions(selectedResult);
+    if (iaSuggestions.length > 0) {
+      // Caja con acento lateral
+      const suggestionText = iaSuggestions.map(s => `•  ${s}`).join('\n');
+      const sugLines = doc.splitTextToSize(suggestionText, 168);
+      const sugBoxH = Math.max(sugLines.length * 4.5 + 6, 14);
+
+      doc.setFillColor(245, 243, 255); // Violet tint
+      doc.setDrawColor(196, 181, 253); // violet-300
+      doc.roundedRect(14, currentY - 2, 182, sugBoxH, 2, 2, 'FD');
+      // Accent bar on left
+      doc.setFillColor(99, 102, 241);
+      doc.rect(14, currentY - 2, 3, sugBoxH, 'F');
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(67, 56, 202); // indigo-700
+      doc.text(sugLines, 21, currentY + 3);
+      currentY += sugBoxH + 6;
+    } else {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(100, 116, 139);
+      doc.text(`Análisis basado en puntaje total: ${selectedResult.result?.total || 0} pts. Seguimiento clínico preventivo recomendado.`, 14, currentY);
+      currentY += 8;
+    }
+
     currentY += 6;
 
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    
-    // COMBINAR IA + PROFESIONAL
-    const iaSuggestions = getIASuggestions(selectedResult);
-    let finalObs = "";
-    if (iaSuggestions.length > 0) {
-      finalObs += "Sugerencias de la IA:\n" + iaSuggestions.map(s => `• ${s}`).join('\n') + "\n\n";
-    }
-    if (professionalNotes.trim()) {
-      finalObs += "Comentarios del Profesional:\n" + professionalNotes.trim();
-    }
-    if (!finalObs) finalObs = "No se registraron observaciones.";
-
-    const obsLines = doc.splitTextToSize(finalObs, 180);
-    doc.text(obsLines, 14, currentY);
-    currentY += (obsLines.length * 5) + 15;
-
-    // Firma
-    if (currentY > 270) { doc.addPage(); currentY = 20; }
+    // ═══════════════════════════════════════════════════════════════════
+    // 7. FIRMA
+    // ═══════════════════════════════════════════════════════════════════
+    if (currentY > 260) { doc.addPage(); currentY = 20; }
     doc.setDrawColor(200, 200, 200);
     doc.line(75, currentY + 10, 135, currentY + 10);
     doc.setFontSize(8);
+    doc.setTextColor(100, 116, 139);
     doc.text('Firma del Especialista', 105, currentY + 15, { align: 'center' });
 
     const fileName = `${selectedResult.patientName}_Reporte.pdf`;
@@ -299,11 +430,37 @@ const Educativo = () => {
 
     if (testId === 'edah') {
       if (scores['Hiperactividad'] > 10) suggestions.push('Implementar técnicas de refuerzo conductual positivo.');
-      if (scores['Déficit de Atención'] > 10) suggestions.push('Entrenamiento en pausas activas y autoinstrucciones.');
+      if (scores['Atención'] > 10) suggestions.push('Entrenamiento en pausas activas y autoinstrucciones.');
       if (total > 30) suggestions.push('Coordinación estrecha con el entorno escolar y psicopedagogía.');
     } else if (testId === 'coopersmith') {
       if (total < 50) suggestions.push('Trabajar en el fortalecimiento del autoconcepto y autoaceptación.');
+      if (scores['Hogar Padres'] < 4) suggestions.push('Terapia familiar sistémica para mejorar la dinámica en el hogar.');
+      if (scores['Escolar'] < 4) suggestions.push('Evaluación psicopedagógica y refuerzo del área académica.');
       suggestions.push('Fomentar actividades que promuevan la autonomía y seguridad.');
+    } else if (testId === 'cisneros') {
+      if (total > 15) suggestions.push('Intervención urgente en el entorno escolar (protocolo anti-bullying).');
+      if (scores['Agresiones'] > 3 || scores['Intimidación/Amenazas'] > 3) suggestions.push('Abordaje de seguridad y posible mediación externa.');
+      suggestions.push('Entrenamiento en habilidades sociales y asertividad.');
+    } else if (testId === 'cas') {
+      if (total >= 15) suggestions.push('Terapia Cognitivo Conductual orientada al manejo de la ansiedad severa.');
+      if (scores['Ansiedad Fisiológica'] > 5) suggestions.push('Entrenamiento en técnicas de relajación (respiración diafragmática, Jacobson).');
+      suggestions.push('Desensibilización sistemática si existen fobias específicas.');
+    } else if (testId === 'cds') {
+      if (total >= 50) suggestions.push('Derivación a psiquiatría infantil para evaluación complementaria.');
+      if (scores['Autoestima'] > 10) suggestions.push('Reestructuración cognitiva enfocada en el autoconcepto.');
+      suggestions.push('Activación conductual y programación de actividades agradables.');
+    } else if (testId === 'fogliatto') {
+      suggestions.push(`Explorar profundamente el interés en el área: ${res.result.interpretation?.['Primera Opción'] || 'principal'}.`);
+      suggestions.push('Fomentar la búsqueda de información ocupacional y ferias vocacionales.');
+      suggestions.push('Realizar entrevistas con profesionales de las áreas de mayor interés.');
+    } else if (testId === 'cacia') {
+      if (total < 40) suggestions.push('Entrenamiento en control de impulsos y demora de la gratificación.');
+      if (scores['Retraso de Recompensa (RR)'] < 5) suggestions.push('Uso de economía de fichas adaptada a la edad.');
+      suggestions.push('Trabajo en habilidades de resolución de problemas.');
+    } else if (testId === 'espq') {
+      suggestions.push('Analizar los factores con puntuaciones extremas (altas o bajas).');
+      suggestions.push('Adaptar el estilo de aprendizaje según el perfil de personalidad.');
+      suggestions.push('Fomentar el desarrollo socioemocional integral.');
     } else {
       suggestions.push('Realizar seguimiento clínico periódico.');
       suggestions.push('Complementar con entrevistas a familiares o cuidadores.');
@@ -595,7 +752,18 @@ const Educativo = () => {
                           {String(text)}
                         </span>
                         <h4>{cat}</h4>
-                        <p>Puntaje obtenido: {selectedResult.result.breakdown?.[cat] || 0} pts</p>
+                        {selectedResult.result?.decatipos?.[cat] ? (
+                          <p>Decatipo (Sten): {selectedResult.result.decatipos[cat]}</p>
+                        ) : (
+                          <p>Puntaje obtenido: {selectedResult.result.breakdown?.[cat] || 0} pts</p>
+                        )}
+                      </div>
+                    ))}
+                    {selectedResult.result?.factoresSecundarios && Object.entries(selectedResult.result.factoresSecundarios).map(([factor, val]) => (
+                      <div key={'fs-'+factor} className="interpretation-card-v2 factor-secundario">
+                        <span className={`risk-pill`}>Decatipo: {String(val)}</span>
+                        <h4>Factor Secundario: {factor}</h4>
+                        <p>Calculado en base a escalas primarias</p>
                       </div>
                     ))}
                     
